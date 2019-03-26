@@ -82,100 +82,29 @@ class ModelManager
     /**
      * @param ToModel $import
      */
-    private function massFlush(ToModel $import)
-    {
-        $this->rows()
-             ->flatMap(function (array $attributes) use ($import) {
-                 return $this->toModels($import, $attributes);
-             })
-             ->mapToGroups(function ($model) {
-                 return [\get_class($model) => $this->prepare($model)->getAttributes()];
-             })
-             ->each(function (Collection $models, string $model) use ($import) {
-                 try {
-                     /* @var Model $model */
-                     $model::query()->insert($models->toArray());
-                 } catch (Throwable $e) {
-                     if ($import instanceof SkipsOnError) {
-                         $import->onError($e);
-                     } else {
-                         throw $e;
-                     }
-                 }
-             });
-    }
+    
 
     /**
      * @param ToModel $import
      */
-    private function singleFlush(ToModel $import)
-    {
-        $this
-            ->rows()
-            ->each(function (array $attributes) use ($import) {
-                $this->toModels($import, $attributes)->each(function (Model $model) use ($import) {
-                    try {
-                        $model->saveOrFail();
-                    } catch (Throwable $e) {
-                        if ($import instanceof SkipsOnError) {
-                            $import->onError($e);
-                        } else {
-                            throw $e;
-                        }
-                    }
-                });
-            });
-    }
+    
 
     /**
      * @param Model $model
      *
      * @return Model
      */
-    private function prepare(Model $model): Model
-    {
-        if ($model->usesTimestamps()) {
-            $time = $model->freshTimestamp();
-
-            $updatedAtColumn = $model->getUpdatedAtColumn();
-
-            // If model has updated at column and not manually provided.
-            if ($updatedAtColumn && null === $model->{$updatedAtColumn}) {
-                $model->setUpdatedAt($time);
-            }
-
-            $createdAtColumn = $model->getCreatedAtColumn();
-
-            // If model has created at column and not manually provided.
-            if ($createdAtColumn && null === $model->{$createdAtColumn}) {
-                $model->setCreatedAt($time);
-            }
-        }
-
-        return $model;
-    }
+    
 
     /**
      * @param WithValidation $import
      *
      * @throws ValidationException
      */
-    private function validateRows(WithValidation $import)
-    {
-        try {
-            $this->validator->validate($this->rows, $import);
-        } catch (RowSkippedException $e) {
-            foreach ($e->skippedRows() as $row) {
-                unset($this->rows[$row]);
-            }
-        }
-    }
+    
 
     /**
      * @return Collection
      */
-    private function rows(): Collection
-    {
-        return new Collection($this->rows);
-    }
+    
 }

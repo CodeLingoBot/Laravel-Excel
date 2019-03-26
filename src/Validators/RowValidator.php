@@ -71,74 +71,33 @@ class RowValidator
      *
      * @return array
      */
-    private function messages(WithValidation $import): array
-    {
-        return method_exists($import, 'customValidationMessages')
-            ? $this->formatKey($import->customValidationMessages())
-            : [];
-    }
+    
 
     /**
      * @param WithValidation $import
      *
      * @return array
      */
-    private function attributes(WithValidation $import): array
-    {
-        return method_exists($import, 'customValidationAttributes')
-            ? $this->formatKey($import->customValidationAttributes())
-            : [];
-    }
+    
 
     /**
      * @param WithValidation $import
      *
      * @return array
      */
-    private function rules(WithValidation $import): array
-    {
-        return $this->formatKey($import->rules());
-    }
+    
 
     /**
      * @param array $elements
      *
      * @return array
      */
-    private function formatKey(array $elements): array
-    {
-        return collect($elements)->mapWithKeys(function ($rule, $attribute) {
-            $attribute = Str::startsWith($attribute, '*.') ? $attribute : '*.' . $attribute;
-
-            return [$attribute => $this->formatRule($rule)];
-        })->all();
-    }
+    
 
     /**
      * @param string|object|callable|array $rules
      *
      * @return string|array
      */
-    private function formatRule($rules)
-    {
-        if (is_array($rules)) {
-            foreach ($rules as $rule) {
-                $formatted[] = $this->formatRule($rule);
-            }
-
-            return $formatted ?? [];
-        }
-
-        if (is_object($rules) || is_callable($rules)) {
-            return $rules;
-        }
-
-        if (Str::contains($rules, 'required_if') && preg_match('/(.*):(.*),(.*)/', $rules, $matches)) {
-            $column = Str::startsWith($matches[2], '*.') ? $matches[2] : '*.' . $matches[2];
-
-            return $matches[1] . ':' . $column . ',' . $matches[3];
-        }
-
-        return $rules;
-    }
+    
 }

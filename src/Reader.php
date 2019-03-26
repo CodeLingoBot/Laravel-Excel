@@ -219,24 +219,7 @@ class Reader
      *
      * @return array
      */
-    private function buildSheetImports($import, IReader $reader): array
-    {
-        $sheetImports = [];
-        if ($import instanceof WithMultipleSheets) {
-            $sheetImports = $import->sheets();
-
-            // When only sheet names are given and the reader has
-            // an option to load only the selected sheets.
-            if (
-                method_exists($reader, 'setLoadSheetsOnly')
-                && count(array_filter(array_keys($sheetImports), 'is_numeric')) === 0
-            ) {
-                $reader->setLoadSheetsOnly(array_keys($sheetImports));
-            }
-        }
-
-        return $sheetImports;
-    }
+    
 
     /**
      * @param object              $import
@@ -250,33 +233,7 @@ class Reader
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @return IReader
      */
-    private function getReader($import, $filePath, string $readerType = null, string $disk = null): IReader
-    {
-        $shouldQueue = $import instanceof ShouldQueue;
-        if ($shouldQueue && !$import instanceof WithChunkReading) {
-            throw new InvalidArgumentException('ShouldQueue is only supported in combination with WithChunkReading.');
-        }
-
-        if ($import instanceof WithEvents) {
-            $this->registerListeners($import->registerEvents());
-        }
-
-        if ($import instanceof WithCustomValueBinder) {
-            Cell::setValueBinder($import);
-        }
-
-        $temporaryFile     = $shouldQueue ? $this->temporaryFileFactory->make() : $this->temporaryFileFactory->makeLocal();
-        $this->currentFile = $temporaryFile->copyFrom(
-            $filePath,
-            $disk
-        );
-
-        return ReaderFactory::make(
-            $import,
-            $this->currentFile,
-            $readerType
-        );
-    }
+    
 
     /**
      * @param object  $import
@@ -284,43 +241,15 @@ class Reader
      *
      * @throws Exception
      */
-    private function beforeReading($import, IReader $reader)
-    {
-        $this->sheetImports = $this->buildSheetImports($import, $reader);
-
-        $this->spreadsheet = $reader->load(
-            $this->currentFile->getLocalPath()
-        );
-
-        // When no multiple sheets, use the main import object
-        // for each loaded sheet in the spreadsheet
-        if (!$import instanceof WithMultipleSheets) {
-            $this->sheetImports = array_fill(0, $this->spreadsheet->getSheetCount(), $import);
-        }
-
-        $this->raise(new BeforeImport($this, $import));
-    }
+    
 
     /**
      * @param object $import
      */
-    private function afterReading($import)
-    {
-        $this->raise(new AfterImport($this, $import));
-
-        $this->garbageCollect();
-    }
+    
 
     /**
      * Garbage collect.
      */
-    private function garbageCollect()
-    {
-        $this->setDefaultValueBinder();
-
-        // Force garbage collecting
-        unset($this->sheetImports, $this->spreadsheet);
-
-        $this->currentFile->delete();
-    }
+    
 }

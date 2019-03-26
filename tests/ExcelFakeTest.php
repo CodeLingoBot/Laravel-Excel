@@ -198,68 +198,20 @@ class ExcelFakeTest extends TestCase
     /**
      * @return FromCollection
      */
-    private function givenExport()
-    {
-        return new class implements FromCollection {
-            /**
-             * @return Collection
-             */
-            public function collection()
-            {
-                return collect(['foo', 'bar']);
-            }
-        };
-    }
+    
 
     /**
      * @return FromCollection
      */
-    private function givenQueuedExport()
-    {
-        return new class implements FromCollection, ShouldQueue {
-            /**
-             * @return Collection
-             */
-            public function collection()
-            {
-                return collect(['foo', 'bar']);
-            }
-        };
-    }
+    
 
     /**
      * @return object
      */
-    private function givenImport()
-    {
-        return new class implements ToModel {
-            /**
-             * @param array $row
-             *
-             * @return Model|null
-             */
-            public function model(array $row)
-            {
-                return new User([]);
-            }
-        };
-    }
+    
 
     /**
      * @return object
      */
-    private function givenQueuedImport()
-    {
-        return new class implements ToModel, ShouldQueue {
-            /**
-             * @param array $row
-             *
-             * @return Model|null
-             */
-            public function model(array $row)
-            {
-                return new User([]);
-            }
-        };
-    }
+    
 }

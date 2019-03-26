@@ -92,40 +92,17 @@ class SerializedQuery
     /**
      * @return Model|null
      */
-    private function newModelInstance()
-    {
-        if (null === $this->model) {
-            return null;
-        }
-
-        /** @var Model $model */
-        $model = new $this->model;
-
-        $model->setConnection($this->connection);
-
-        return $model;
-    }
+    
 
     /**
      * @param Builder|\Illuminate\Database\Eloquent\Builder $builder
      *
      * @return array
      */
-    private function serializeEagerLoads($builder): array
-    {
-        return collect(method_exists($builder, 'getEagerLoads') ? $builder->getEagerLoads() : [])
-            ->map(function (Closure $constraint) {
-                return new SerializableClosure($constraint);
-            })->toArray();
-    }
+    
 
     /**
      * @return array
      */
-    private function eagerLoads(): array
-    {
-        return collect($this->with)->map(function (SerializableClosure $closure) {
-            return $closure->getClosure();
-        })->toArray();
-    }
+    
 }

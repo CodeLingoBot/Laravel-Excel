@@ -75,41 +75,7 @@ class ChunkReader
      *
      * @return array
      */
-    private function getWorksheets(WithChunkReading $import, IReader $reader, string $file): array
-    {
-        // Csv doesn't have worksheets.
-        if (!method_exists($reader, 'listWorksheetNames')) {
-            return ['Worksheet' => $import];
-        }
-
-        $worksheets     = [];
-        $worksheetNames = $reader->listWorksheetNames($file);
-        if ($import instanceof WithMultipleSheets) {
-            $sheetImports = $import->sheets();
-
-            // Load specific sheets.
-            if (method_exists($reader, 'setLoadSheetsOnly')) {
-                $reader->setLoadSheetsOnly(array_keys($sheetImports));
-            }
-
-            foreach ($sheetImports as $index => $sheetImport) {
-                // Translate index to name.
-                if (is_numeric($index)) {
-                    $index = $worksheetNames[$index] ?? $index;
-                }
-
-                // Specify with worksheet name should have which import.
-                $worksheets[$index] = $sheetImport;
-            }
-        } else {
-            // Each worksheet the same import class.
-            foreach ($worksheetNames as $name) {
-                $worksheets[$name] = $import;
-            }
-        }
-
-        return $worksheets;
-    }
+    
 
     /**
      * @param IReader $reader
@@ -117,15 +83,5 @@ class ChunkReader
      *
      * @return array
      */
-    private function getTotalRows(IReader $reader, string $file): array
-    {
-        $info = $reader->listWorksheetInfo($file);
-
-        $totalRows = [];
-        foreach ($info as $sheet) {
-            $totalRows[$sheet['worksheetName']] = $sheet['totalRows'];
-        }
-
-        return $totalRows;
-    }
+    
 }

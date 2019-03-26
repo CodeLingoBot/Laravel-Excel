@@ -453,13 +453,5 @@ class WithValidationTest extends TestCase
      * @param string              $attribute
      * @param array               $messages
      */
-    private function validateFailure(ValidationException $e, int $row, string $attribute, array $messages)
-    {
-        $failures = $e->failures();
-        $failure  = head($failures);
-
-        $this->assertEquals($row, $failure->row());
-        $this->assertEquals($attribute, $failure->attribute());
-        $this->assertEquals($messages, $failure->errors());
-    }
+    
 }

@@ -571,37 +571,19 @@ class Sheet
     /**
      * @return bool
      */
-    private function hasRows(): bool
-    {
-        $startCell = 'A1';
-        if ($this->exportable instanceof WithCustomStartCell) {
-            $startCell = $this->exportable->startCell();
-        }
-
-        return $this->worksheet->cellExists($startCell);
-    }
+    
 
     /**
      * @param object $sheetExport
      *
      * @return bool
      */
-    private function hasStrictNullComparison($sheetExport): bool
-    {
-        return $sheetExport instanceof WithStrictNullComparison;
-    }
+    
 
     /**
      * @param object|WithCustomChunkSize $export
      *
      * @return int
      */
-    private function getChunkSize($export): int
-    {
-        if ($export instanceof WithCustomChunkSize) {
-            return $export->chunkSize();
-        }
-
-        return $this->chunkSize;
-    }
+    
 }

@@ -57,22 +57,10 @@ class TemporaryFileFactory
     /**
      * @return RemoteTemporaryFile
      */
-    private function makeRemote(): RemoteTemporaryFile
-    {
-        $filename = $this->generateFilename();
-
-        return new RemoteTemporaryFile(
-            $this->temporaryDisk,
-            $filename,
-            $this->makeLocal($filename)
-        );
-    }
+    
 
     /**
      * @return string
      */
-    private function generateFilename(): string
-    {
-        return 'laravel-excel-' . Str::random(32);
-    }
+    
 }
